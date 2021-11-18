@@ -7,17 +7,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import com.lti.bean.Course;
 import com.lti.bean.User;
-import com.lti.bean.GradeCard;
-import com.lti.bean.Student;
 import com.lti.exception.UserNotFoundException;
-import com.lti.service.AdminInterface;
-import com.lti.service.AdminOperations;
-import com.lti.service.ProfessorInterface;
-import com.lti.service.ProfessorOperations;
-import com.lti.service.StudentInterface;
-import com.lti.service.StudentOperations;
 import com.lti.service.UserInterface;
 import com.lti.service.UserOperations;
 
@@ -37,7 +28,7 @@ public class CRSApplication {
 	}
 	/////////////////////////////////////////////////////////////////////////////////
 	public static void mainMenu(){
-		Scanner s1 = null;
+		Scanner s1 = new Scanner(System.in);
 		
 		do{
 			int choice = 0;
@@ -51,7 +42,7 @@ public class CRSApplication {
 			s1 = new Scanner(System.in);
 			
 			try{
-			 choice = s1.nextInt();
+				choice = s1.nextInt();
 			}catch(InputMismatchException ex){
 				System.out.println("\n Please select options from above given menu \n");
 			}
@@ -73,6 +64,7 @@ public class CRSApplication {
 		s1.close();
 	}
 	////////////////////////////////////////////////////////////////////////
+	@SuppressWarnings("resource")
 	public static void loginOperation(){
 	
 		System.out.println("Please Login to start");
@@ -119,67 +111,28 @@ public class CRSApplication {
 		}
 		
 		if(isLogin){
-			Scanner s3 = null;	
 			
 				switch(role){ 
 				
-				case "Admin": 
-				System.out.println("===Welcome to Admin Portal===");
-				System.out.println("Please select from below operations");
-				System.out.println("  1.Add Course");
-				System.out.println("  2.Remove Course");
-				System.out.println("  3.Add Professor");
-				System.out.println("  4.Generate Report Card");
-				System.out.println("  5.Approve Student Registration");	
-				
-				s3 = new Scanner(System.in);
-				
-				try{
-					selectedOption = s3.nextInt();
-					}catch(InputMismatchException ex){
-						System.out.println("\n Please select options from above given menu \n");
-					}
-				
-				doOperations(role, selectedOption);
-				break; 
-				
-				case "Student":    
-				System.out.println("===Welcome to Student Portal===");
-				System.out.println("Please select from below operations");
-				System.out.println("  1.Register for the Course");
-				System.out.println("  2.Add Course");
-				System.out.println("  3.Drop Course");
-				System.out.println("  4.View Grade");
-				System.out.println("  5.Pay Fee");	
-				
-				s3 = new Scanner(System.in);
-				try{
-					selectedOption = s3.nextInt();
-					}catch(InputMismatchException ex){
-						System.out.println("\n Please select options from above given menu \n");
-					}
-				doOperations(role, selectedOption);
-				break;  
-				
-				case "Professor":    
-				System.out.println("===Welcome to Professor Portal===");
-				System.out.println("Please select from below operations");
-				System.out.println("  1.View Enrolled Students");
-				System.out.println("  2.View Courses");
-				System.out.println("  3.Add Student Grade");	
-				
-				s3 = new Scanner(System.in);
-				try{
-					selectedOption = s3.nextInt();
-					}catch(InputMismatchException ex){
-						System.out.println("\n Please select options from above given menu \n");
-					}
-				doOperations(role, selectedOption);
-				
-				default:     
-				System.out.println("Please select appropriate user"); 
+					case "Admin":  //Admin Menu
+	
+					AdminMenu.showAdminMenu();
+					break; 
+					
+					case "Student":   //Student Menu 
+	
+					StudentMenu.showStudentMenu();	
+					break;  
+					
+					case "Professor":  //Professor Menu  
+						
+					ProfessorMenu.showProfessorMenu();	
+					break;
+					
+					default:     
+					System.out.println("Please select appropriate user"); 
 				} 
-				s3.close();
+				
 			}else{
 				try {
 					throw new UserNotFoundException(userName);
@@ -191,90 +144,5 @@ public class CRSApplication {
 			s2.close();
 		}
 	}
-	
-	/////////////////////////////////////////////////////////////////////////////////
-	
-	public static void doOperations(String role, int selectedOption){
-		
-		if(role.equals("Admin")){
-			
-			AdminInterface admin = new AdminOperations();
-			
-			switch(selectedOption){
-			case 1: 
-				admin.addCoursesInCatalogue();
-				break; 
-				
-			case 2: 
-				admin.removeCoursesFromCatalogue();
-				break;
-				 
-			case 3: 
-				admin.addProfessor();
-				break;
-				
-			case 4: 
-				admin.generateReportCard();
-				break;
-				
-			case 5: 
-				admin.approveStudentRegistration();
-				break;
-			default:     
-			   System.out.println("Please select appropriate operation"); 
-			}  
-			
-		}else if(role.equals("Student")){
-			
-			StudentInterface student = new StudentOperations();
-			
-			switch(selectedOption){
-			case 1: 
-				student.registerForCourse();
-				break; 
-				
-			case 2: 
-				student.addCourses();
-				break;
-				 
-			case 3: 
-				student.dropCourses();
-				break;
-				
-			case 4: 
-				student.viewGrades();
-				break;
-				
-			case 5: 
-				student.payFees();
-				break;
-			default:     
-			   System.out.println("Please select appropriate operation"); 
-			}  
-		}else if(role.equals("Professor")){
-			
-			ProfessorInterface professor = new ProfessorOperations();
-			
-			switch(selectedOption){
-			case 1: 
-				professor.viewEnrolledStudents();
-				break; 
-				
-			case 2: 
-				professor.addStudentGradeInReport(null,null);
-				break;
-				 
-			case 3: 
-				professor.viewCourses();
-				break;
-				
-			default:     
-			   System.out.println("Please select appropriate operation"); 
-			}  
-		}else{
-			System.out.println("Please select appropriate user");
-		}	
-	}
-	
 	
 }
